@@ -40,4 +40,8 @@
   <run_depend>std_msgs</run_depend>
   <run_depend>image_transport</run_depend>
   <run_depend>message_runtime</run_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 </package>
