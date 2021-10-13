@@ -45,16 +45,16 @@ class ScanSimulator2D {
     ScanSimulator2D() {}
 
     ScanSimulator2D(
-        int num_beams_, 
-        double field_of_view_, 
-        double scan_std_dev_, 
+        int num_beams_,
+        double field_of_view_,
+        double scan_std_dev_,
         double ray_tracing_epsilon=0.0001,
         int theta_discretization=2000);
 
     void set_map(
-        const std::vector<double> & map, 
-        size_t height, 
-        size_t width, 
+        const std::vector<double> & map,
+        size_t height,
+        size_t width,
         double resolution,
         const Pose2D & origin,
         double free_threshold);

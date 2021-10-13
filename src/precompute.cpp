@@ -30,7 +30,7 @@ std::vector<double> Precompute::get_car_distances(int scan_beams, double wheelba
                 double to_side = dist_to_sides / std::cos(angle - PI / 2.0);
                 double to_back = dist_to_back / std::sin(angle - PI / 2.0);
                 car_distances[i] = std::min(to_side, to_back);
-            } 
+            }
         } else {
             if (angle > -PI / 2.0) {
                 // between 0 and -pi/2

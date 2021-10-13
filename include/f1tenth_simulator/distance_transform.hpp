@@ -10,7 +10,7 @@ class DistanceTransform {
 private:
 
     static constexpr double inf = std::numeric_limits<double>::infinity();
-    
+
 public:
     DistanceTransform(size_t max_size);
 

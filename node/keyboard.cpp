@@ -1,11 +1,12 @@
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
-#include <std_msgs/String.h>
+#include <std_msgs/msg/string.hpp>
 
 #include <termios.h>
 
 #include <stdio.h>
 #include <signal.h>
+#include <unistd.h>
 
 // for printing
 #include <iostream>
@@ -13,45 +14,44 @@
 static volatile sig_atomic_t keep_running = 1;
 
 
-void sigHandler(int not_used) {
+void sigHandler(int /* not_used */ ) {
     keep_running = 0;
 }
 
 int main(int argc, char ** argv) {
-    ros::init(argc, argv, "keyboard");
-    // Initialize Node Handle
-    ros::NodeHandle n = ros::NodeHandle("~");
+    rclcpp::init(argc, argv);
+    auto node = rclcpp::Node::make_shared("keyboard");
 
-    // Initialze publisher
-    std::string keyboard_topic;
-    n.getParam("keyboard_topic", keyboard_topic);
+    // Initialize publisher
+    rclcpp::Parameter keyboard_topic = node->get_parameter("keyboard_topic");
+    std::string keyboard_topic_str = keyboard_topic.as_string();
 
-    ros::Publisher key_pub = n.advertise<std_msgs::String>(keyboard_topic, 10);
+    auto key_pub = node->create_publisher<std_msgs::msg::String>(keyboard_topic_str, 10);
 
 
-    static struct termios oldt, newt;
-    tcgetattr( STDIN_FILENO, &oldt);
-    newt = oldt;
-    newt.c_lflag &= ~(ICANON);
-    tcsetattr( STDIN_FILENO, 0, &newt);
+    static struct termios oldT, newT;
+    tcgetattr( STDIN_FILENO, &oldT);
+    newT = oldT;
+    newT.c_lflag &= ~(ICANON);
+    tcsetattr( STDIN_FILENO, 0, &newT);
 
     struct sigaction act;
     act.sa_handler = sigHandler;
     sigaction(SIGINT, &act, NULL);
-    
 
-    std_msgs::String msg;
+
+    auto msg = std_msgs::msg::String();
     int c;
-    while ((ros::ok()) && (keep_running)) {
+    while ((rclcpp::ok()) && (keep_running)) {
         // get the character pressed
         c = getchar();
 
-        // Publish the character 
+        // Publish the character
         msg.data = c;
-        key_pub.publish(msg);
+        key_pub->publish(msg);
     }
 
-    tcsetattr( STDIN_FILENO, 0, &oldt);
-    
+    tcsetattr( STDIN_FILENO, 0, &oldT);
+
     return 0;
 }

@@ -12,7 +12,7 @@
 using namespace racecar_simulator;
 
 void DistanceTransform::distance_squared_1d(
-    const std::vector<double> & input, 
+    const std::vector<double> & input,
     std::vector<double> & output) {
 
   // Each parabola has the form
@@ -81,9 +81,9 @@ void DistanceTransform::distance_squared_1d(
 }
 
 void DistanceTransform::distance_squared_2d(
-    std::vector<double> & input, 
-    size_t width, 
-    size_t height, 
+    std::vector<double> & input,
+    size_t width,
+    size_t height,
     double boundary_value) {
 
   // Transform along the columns
@@ -118,9 +118,9 @@ void DistanceTransform::distance_squared_2d(
 }
 
 void DistanceTransform::distance_2d(
-    std::vector<double> & input, 
-    size_t width, 
-    size_t height, 
+    std::vector<double> & input,
+    size_t width,
+    size_t height,
     double resolution,
     double boundary_value) {
 

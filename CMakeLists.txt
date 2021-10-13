@@ -49,7 +49,7 @@ set(LIBS ${LIBS} ${PROJECT_NAME})
 
 # Install the library to CMAKE_INSTALL_PREFIX
 # which defaults to /usr/local
-install(TARGETS 
+install(TARGETS
   ${PROJECT_NAME}
   DESTINATION lib
 )
@@ -58,9 +58,6 @@ install(DIRECTORY
   DESTINATION include
 )
 
-set(LIBS ${LIBS}
-  rclcpp
-  std_msgs)
 include_directories(include ${Boost_INCLUDE_DIRS})
 
 # Add the nodes
