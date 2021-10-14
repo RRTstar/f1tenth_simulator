@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 3.5)
 project(f1tenth_simulator)
 
-set(CMAKE_CXX_STANDARD 14)
-add_compile_options(-Wall -Wextra -Wpedantic)
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -49,38 +55,49 @@ set(LIBS ${LIBS} ${PROJECT_NAME})
 
 # Install the library to CMAKE_INSTALL_PREFIX
 # which defaults to /usr/local
-install(TARGETS
-  ${PROJECT_NAME}
-  DESTINATION lib
-)
-install(DIRECTORY
-  include/${PROJECT_NAME}
-  DESTINATION include
-)
+# install(TARGETS
+#   ${PROJECT_NAME}
+#   DESTINATION lib
+# )
+# install(DIRECTORY
+#   include/${PROJECT_NAME}
+#   DESTINATION include
+# )
 
-include_directories(include ${Boost_INCLUDE_DIRS})
+# include_directories(include ${Boost_INCLUDE_DIRS})
 
 # Add the nodes
 file(GLOB NODE_SRC_FILES node/*.cpp)
 foreach(_node_file ${NODE_SRC_FILES})
-    get_filename_component(_node_name ${_node_file} NAME_WE)
-    add_executable(${_node_name} ${_node_file})
-    target_link_libraries(${_node_name} ${LIBS})
-    # add_dependencies(${_node_name} f1tenth_simulator_rosidl_generate_interfaces_cpp)
+   get_filename_component(_node_name ${_node_file} NAME_WE)
+   add_executable(${_node_name} ${_node_file})
+   target_link_libraries(${_node_name} ${LIBS})
+   # add_dependencies(${_node_name} f1tenth_simulator_rosidl_generate_interfaces_cpp)
+  install(TARGETS ${_node_name}
+  # ARCHIVE DESTINATION lib
+  # LIBRARY DESTINATION lib
+  # RUNTIME DESTINATION lib/${PROJECT_NAME}
+  DESTINATION lib/${PROJECT_NAME}
+  )
 endforeach()
 
-# Install the library
-install(TARGETS ${PROJECT_NAME}
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION lib/${PROJECT_NAME}
-)
-install(DIRECTORY include/${PROJECT_NAME}/
-    DESTINATION include/${PROJECT_NAME}
+install(
+  DIRECTORY launch maps param rviz
+  DESTINATION share/${PROJECT_NAME}
 )
 
-ament_export_include_directories(include)
-ament_export_libraries(${PROJECT_NAME})
-ament_export_dependencies(message_runtime)
+# Install the library
+# install(TARGETS ${PROJECT_NAME}
+#     ARCHIVE DESTINATION lib
+#     LIBRARY DESTINATION lib
+#     RUNTIME DESTINATION lib/${PROJECT_NAME}
+# )
+# install(DIRECTORY include/${PROJECT_NAME}/
+#     DESTINATION include/${PROJECT_NAME}
+# )
+
+# ament_export_include_directories(include)
+# ament_export_libraries(${PROJECT_NAME})
+# ament_export_dependencies(message_runtime)
 
 ament_package ()
