@@ -38,7 +38,8 @@ def generate_launch_description():
             package='nav2_map_server',
             executable='map_server',
             name='map_server',
-            arguments=['$(find f1tenth_simulator)/maps/levine.yaml'],
+            # arguments=['$(find f1tenth_simulator)/maps/levine.yaml'],
+            parameters = [param_dir],
             output='screen'
         ),
         IncludeLaunchDescription(

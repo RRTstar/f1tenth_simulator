@@ -40,10 +40,10 @@ public:
         max_steering_angle_double = this->get_parameter("max_steering_angle").as_double();
 
         // Make a publisher for drive messages
-        drive_pub = this->create_publisher<ackermann_msgs::msg::AckermannDriveStamped>(drive_topic_str, rclcpp::SensorDataQoS());
+        drive_pub = this->create_publisher<ackermann_msgs::msg::AckermannDriveStamped>(drive_topic_str, 10);
 
         // Start a subscriber to listen to odom messages
-        this->create_subscription<nav_msgs::msg::Odometry>(odom_topic_str, rclcpp::SensorDataQoS(), std::bind(&RandomWalker::odom_callback, this, std::placeholders::_1));
+        this->create_subscription<nav_msgs::msg::Odometry>(odom_topic_str, 10, std::bind(&RandomWalker::odom_callback, this, std::placeholders::_1));
     }
 
     void odom_callback(const nav_msgs::msg::Odometry::SharedPtr /* msg */) {

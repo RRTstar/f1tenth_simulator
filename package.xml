@@ -33,13 +33,15 @@
   <run_depend>sensor_msgs</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>joy</run_depend>
-  <run_depend>map_server</run_depend>
+  <run_depend>nav2_map_server</run_depend>
   <run_depend>interactive_markers</run_depend>
   <run_depend>visualization_msgs</run_depend>
   <run_depend>cv_bridge</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>image_transport</run_depend>
   <run_depend>message_runtime</run_depend>
+
+  <exec_depend>nav2_bringup</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

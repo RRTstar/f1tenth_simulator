@@ -104,7 +104,13 @@ racecar_simulator:
     obstacle_size: 2
     ttc_threshold: 0.01
 
-
+map_server:
+    ros__parameters:
+        frame_id: map
+        topic_name: map
+        use_sim_time: False
+        autostart: True
+        yaml_filename: "levine.yaml"
   # # The distance between the front and
   # # rear axle of the racecar
   # wheelbase: 0.3302 # meters

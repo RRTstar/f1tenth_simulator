@@ -17,6 +17,7 @@ private:
 
     // Publish drive data to simulator/car
     rclcpp::Publisher<ackermann_msgs::msg::AckermannDriveStamped>::SharedPtr drive_pub;
+
     // Mux indices
     int joy_mux_idx_int;
     int key_mux_idx_int;
@@ -59,11 +60,11 @@ public:
         drive_pub = this->create_publisher<ackermann_msgs::msg::AckermannDriveStamped>(drive_topic_str, 10);
 
         // Start a subscriber to listen to mux messages
-        this->create_subscription<std_msgs::msg::Int32MultiArray>(mux_topic_str, rclcpp::SensorDataQoS(), std::bind(&Mux::mux_callback, this, std::placeholders::_1));
+        this->create_subscription<std_msgs::msg::Int32MultiArray>(mux_topic_str, 10, std::bind(&Mux::mux_callback, this, std::placeholders::_1));
 
         // Start subscribers to listen to joy and keyboard messages
-        this->create_subscription<sensor_msgs::msg::Joy>(joy_topic_str, rclcpp::SensorDataQoS(), std::bind(&Mux::joy_callback, this, std::placeholders::_1));
-        this->create_subscription<std_msgs::msg::String>(keyboard_topic_str, rclcpp::SensorDataQoS(), std::bind(&Mux::key_callback, this, std::placeholders::_1));
+        this->create_subscription<sensor_msgs::msg::Joy>(joy_topic_str, 10, std::bind(&Mux::joy_callback, this, std::placeholders::_1));
+        this->create_subscription<std_msgs::msg::String>(keyboard_topic_str, 10, std::bind(&Mux::key_callback, this, std::placeholders::_1));
 
         // get mux indices
         this->declare_parameter("joy_mux_idx");
@@ -249,7 +250,7 @@ Channel::Channel() : Node("channel") {
 Channel::Channel(std::string channel_name_str, std::string drive_topic_str, int mux_idx_, Mux* mux)
 : Node("channel"), mux_idx(mux_idx_), mp_mux(mux) {
     drive_pub = this->create_publisher<ackermann_msgs::msg::AckermannDriveStamped>(drive_topic_str, 10);
-    this->create_subscription<ackermann_msgs::msg::AckermannDriveStamped>(channel_name_str, rclcpp::SensorDataQoS(), std::bind(&Channel::drive_callback, this, std::placeholders::_1));
+    this->create_subscription<ackermann_msgs::msg::AckermannDriveStamped>(channel_name_str, 10, std::bind(&Channel::drive_callback, this, std::placeholders::_1));
 }
 
 void Channel::drive_callback(const ackermann_msgs::msg::AckermannDriveStamped::SharedPtr msg) {
