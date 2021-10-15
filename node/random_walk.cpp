@@ -28,22 +28,22 @@ private:
 public:
     RandomWalker() : Node("random_walker") {
         // get topic names
-        rclcpp::Parameter drive_topic = this->get_parameter("rand_drive_topic");
-        rclcpp::Parameter odom_topic = this->get_parameter("odom_topic");
-        std::string drive_topic_str = drive_topic.as_string();
-        std::string odom_topic_str = odom_topic.as_string();
+        this->declare_parameter("rand_drive_topic");
+        std::string drive_topic_str = this->get_parameter("rand_drive_topic").as_string();
+        this->declare_parameter("odom_topic");
+        std::string odom_topic_str = this->get_parameter("odom_topic").as_string();
 
         // get car parameters
-        rclcpp::Parameter max_speed = this->get_parameter("max_speed");
-        rclcpp::Parameter max_steering_angle = this->get_parameter("max_steering_angle");
-        max_speed_double = max_speed.as_double();
-        max_steering_angle_double = max_steering_angle.as_double();
+        this->declare_parameter("max_speed");
+        max_speed_double = this->get_parameter("max_speed").as_double();
+        this->declare_parameter("max_steering_angle");
+        max_steering_angle_double = this->get_parameter("max_steering_angle").as_double();
 
         // Make a publisher for drive messages
-        drive_pub = this->create_publisher<ackermann_msgs::msg::AckermannDriveStamped>(drive_topic_str, 10);
+        drive_pub = this->create_publisher<ackermann_msgs::msg::AckermannDriveStamped>(drive_topic_str, rclcpp::SensorDataQoS());
 
         // Start a subscriber to listen to odom messages
-        this->create_subscription<nav_msgs::msg::Odometry>(odom_topic_str, 1, std::bind(&RandomWalker::odom_callback, this, std::placeholders::_1));
+        this->create_subscription<nav_msgs::msg::Odometry>(odom_topic_str, rclcpp::SensorDataQoS(), std::bind(&RandomWalker::odom_callback, this, std::placeholders::_1));
     }
 
     void odom_callback(const nav_msgs::msg::Odometry::SharedPtr /* msg */) {

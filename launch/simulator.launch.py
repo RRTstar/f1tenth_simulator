@@ -5,7 +5,10 @@ from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 #from launch_ros.parameters_type import Parameters
+from launch.actions import IncludeLaunchDescription
+from launch.substitutions import ThisLaunchFileDir
 
 def generate_launch_description():
     # use_sim_time = LaunchConfiguration('use_sim_time', default='false')
@@ -17,11 +20,14 @@ def generate_launch_description():
                 'param',
                 'params.yaml'))
 
+    print(param_dir)
+
     return LaunchDescription([
         DeclareLaunchArgument(
             'param_dir',
             default_value = param_dir,
-            description = 'param directory'),
+            description = 'param directory'
+        ),
         Node(
             package='joy',
             executable='joy_node',
@@ -35,17 +41,22 @@ def generate_launch_description():
             arguments=['$(find f1tenth_simulator)/maps/levine.yaml'],
             output='screen'
         ),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                [ThisLaunchFileDir(), '/racecar_model.launch.py']
+            )
+        ),
         Node(
             package = 'f1tenth_simulator',
             executable = 'simulator',
-            name = 'simulator',
+            name = 'racecar_simulator',
             parameters = [param_dir],
             output = 'screen'
         ),
         Node(
             package= 'f1tenth_simulator',
             executable= 'mux',
-            name = 'mux',
+            name = 'mux_controller',
             parameters = [param_dir],
             output = 'screen'
         ),
@@ -59,7 +70,7 @@ def generate_launch_description():
         Node(
             package= 'f1tenth_simulator',
             executable= 'random_walk',
-            name = 'random_walk',
+            name = 'random_walker',
             parameters = [param_dir],
             output = 'screen'
         ),
@@ -69,7 +80,7 @@ def generate_launch_description():
             name = 'keyboard',
             parameters = [param_dir],
             output = 'screen'
-        )
+        ),
         # Node(
         #     package='rviz2',
         #     executable='rviz2',

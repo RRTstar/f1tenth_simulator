@@ -15,10 +15,11 @@ If you have ```ros-foxy-desktop``` installed, the additional dependencies you mu
 - ackermann_msgs
 - joy
 - map_server
+- xacro
 
 You can install them by running:
 
-    sudo apt-get install ros-foxy-tf2-geometry-msgs ros-foxy-ackermann-msgs ros-foxy-joy ros-foxy-nav2-map-server
+    sudo apt-get install ros-foxy-tf2-geometry-msgs ros-foxy-ackermann-msgs ros-foxy-joy ros-foxy-nav2-map-server ros-foxy-xacro
 
 The full list of dependencies can be found in the ```package.xml``` file.
 
@@ -28,7 +29,7 @@ To install the simulator package, clone the repo with the simulator and starter 
 
     cd ~/dev_ws/src
     git clone https://github.com/f1tenth/f1tenth_simulator.git
-    
+
 Then run ```colcon build``` to build it:
 
     cd ~/dev_ws
@@ -62,7 +63,7 @@ The simulator was set up with two main objectives in mind- similitude to the rea
 ![Simplified graph of ROS nodes](https://github.com/f1tenth/f1tenth_simulator/blob/master/media/sim_graph_public.png)
 
 Our public simulator includes a simple *random driver* node as an example for what a planning node should look like. Each planner can listen to the sensor data published by the *simulator* and then publish [AckermannDrive](http://docs.ros.org/melodic/api/ackermann_msgs/html/msg/AckermannDrive.html) messages to their own specific topic (e.g., ```/random_drive```). The *mux* node listens to all of these topics, then takes the message from whichever planner is turned on and publishes it to the main ```/drive``` topic, which the *simulator* listens to. Note that only the velocity and steering angle specified in the message are used. The *mux* node also listens to joystick and keyboard messages too, for manual driving.
-The *behavior controller* node tells the *mux* node which planner is on through the ```/mux``` topic. By default, each planner (including keyboard and joystick) is mapped to a joystick button and keyboard key, and they are simply toggled on and off manually. 
+The *behavior controller* node tells the *mux* node which planner is on through the ```/mux``` topic. By default, each planner (including keyboard and joystick) is mapped to a joystick button and keyboard key, and they are simply toggled on and off manually.
 Additionally, upon collision, the car will halt and all mux channels will be clear- nothing will be in control until manual intervention.
 
 To instantly move the car to a new state publish [Pose](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Pose.html) messages to the ```/pose``` topic. This can be useful for scripting the car through a series of automated tests.

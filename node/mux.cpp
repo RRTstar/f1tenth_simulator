@@ -46,14 +46,14 @@ private:
 public:
     Mux() : Node("mux_controller") {
         // get topic names
-        rclcpp::Parameter drive_topic = this->get_parameter("drive_topic");
-        rclcpp::Parameter mux_topic = this->get_parameter("mux_topic");
-        rclcpp::Parameter joy_topic = this->get_parameter("joy_topic");
-        rclcpp::Parameter keyboard_topic = this->get_parameter("keyboard_topic");
-        std::string drive_topic_str = drive_topic.as_string();
-        std::string mux_topic_str = mux_topic.as_string();
-        std::string joy_topic_str = mux_topic.as_string();
-        std::string keyboard_topic_str = mux_topic.as_string();
+        this->declare_parameter("drive_topic");
+        std::string drive_topic_str = this->get_parameter("drive_topic").as_string();
+        this->declare_parameter("mux_topic");
+        std::string mux_topic_str = this->get_parameter("mux_topic").as_string();
+        this->declare_parameter("joy_topic");
+        std::string joy_topic_str = this->get_parameter("joy_topic").as_string();
+        this->declare_parameter("keyboard_topic");
+        std::string keyboard_topic_str = this->get_parameter("keyboard_topic").as_string();
 
         // Make a publisher for drive messages
         drive_pub = this->create_publisher<ackermann_msgs::msg::AckermannDriveStamped>(drive_topic_str, 10);
@@ -66,31 +66,31 @@ public:
         this->create_subscription<std_msgs::msg::String>(keyboard_topic_str, rclcpp::SensorDataQoS(), std::bind(&Mux::key_callback, this, std::placeholders::_1));
 
         // get mux indices
-        rclcpp::Parameter joy_mux_idx = this->get_parameter("joy_mux_idx");
-        rclcpp::Parameter key_mux_idx = this->get_parameter("key_mux_idx");
-        joy_mux_idx_int = joy_mux_idx.as_int();
-        key_mux_idx_int = key_mux_idx.as_int();
+        this->declare_parameter("joy_mux_idx");
+        joy_mux_idx_int = this->get_parameter("joy_mux_idx").as_int();
+        this->declare_parameter("key_mux_idx");
+        key_mux_idx_int = this->get_parameter("key_mux_idx").as_int();
 
         // get params for joystick calculations
-        rclcpp::Parameter joy_speed_axis = this->get_parameter("joy_speed_axis");
-        rclcpp::Parameter joy_angle_axis = this->get_parameter("joy_angle_axis");
-        joy_speed_axis_int = joy_speed_axis.as_int();
-        joy_angle_axis_int = joy_angle_axis.as_int();
+        this->declare_parameter("joy_speed_axis");
+        joy_speed_axis_int = this->get_parameter("joy_speed_axis").as_int();
+        this->declare_parameter("joy_angle_axis");
+        joy_angle_axis_int = this->get_parameter("joy_angle_axis").as_int();
 
-        rclcpp::Parameter max_steering_angle = this->get_parameter("max_steering_angle");
-        rclcpp::Parameter max_speed = this->get_parameter("max_speed");
-        max_steering_angle_double = max_steering_angle.as_double();
-        max_speed_double = max_speed.as_double();
+        this->declare_parameter("max_steering_angle");
+        max_steering_angle_double = this->get_parameter("max_steering_angle").as_double();
+        this->declare_parameter("max_speed");
+        max_speed_double = this->get_parameter("max_speed").as_double();
 
         // get params for keyboard driving
-        rclcpp::Parameter keyboard_speed = this->get_parameter("keyboard_speed");
-        rclcpp::Parameter keyboard_steer_ang = this->get_parameter("keyboard_steer_ang");
-        keyboard_speed_double = keyboard_speed.as_double();
-        keyboard_steer_ang_double = keyboard_steer_ang.as_double();
+        this->declare_parameter("keyboard_speed");
+        keyboard_speed_double = this->get_parameter("keyboard_speed").as_double();
+        this->declare_parameter("keyboard_steer_ang");
+        keyboard_steer_ang_double = this->get_parameter("keyboard_steer_ang").as_double();
 
         // get size of mux
-        rclcpp::Parameter mux_size = this->get_parameter("mux_size");
-        mux_size_int = mux_size.as_int();
+        this->declare_parameter("mux_size");
+        mux_size_int = this->get_parameter("mux_size").as_int();
 
         // initialize mux controller
         mux_controller.reserve(mux_size_int);
@@ -105,24 +105,24 @@ public:
 
         /// Add new channels here:
         // Random driver example
-        rclcpp::Parameter random_walker_mux_idx = this->get_parameter("random_walker_mux_idx");
-        int random_walker_mux_idx_int = random_walker_mux_idx.as_int();
-        rclcpp::Parameter rand_drive_topic = this->get_parameter("rand_drive_topic");
-        std::string rand_drive_topic_str = rand_drive_topic.as_string();
+        this->declare_parameter("random_walker_mux_idx");
+        int random_walker_mux_idx_int = this->get_parameter("random_walker_mux_idx").as_int();
+        this->declare_parameter("rand_drive_topic");
+        std::string rand_drive_topic_str = this->get_parameter("rand_drive_topic").as_string();
         add_channel(rand_drive_topic_str, drive_topic_str, random_walker_mux_idx_int);
 
         // Channel for emergency braking
-        rclcpp::Parameter brake_mux_idx = this->get_parameter("brake_mux_idx");
-        int brake_mux_idx_int = brake_mux_idx.as_int();
-        rclcpp::Parameter brake_drive_topic = this->get_parameter("brake_drive_topic");
-        std::string brake_drive_topic_str = brake_drive_topic.as_string();
+        this->declare_parameter("brake_mux_idx");
+        int brake_mux_idx_int = this->get_parameter("brake_mux_idx").as_int();
+        this->declare_parameter("brake_drive_topic");
+        std::string brake_drive_topic_str = this->get_parameter("brake_drive_topic").as_string();
         add_channel(brake_drive_topic_str, drive_topic_str, brake_mux_idx_int);
 
         // General navigation channel
-        rclcpp::Parameter nav_mux_idx = this->get_parameter("nav_mux_idx");
-        int nav_mux_idx_int = nav_mux_idx.as_int();
-        rclcpp::Parameter nav_drive_topic = this->get_parameter("nav_drive_topic");
-        std::string nav_drive_topic_str = nav_drive_topic.as_string();
+        this->declare_parameter("nav_mux_idx");
+        int nav_mux_idx_int = this->get_parameter("nav_mux_idx").as_int();
+        this->declare_parameter("nav_drive_topic");
+        std::string nav_drive_topic_str = this->get_parameter("nav_drive_topic").as_string();
         add_channel(nav_drive_topic_str, drive_topic_str, nav_mux_idx_int);
 
         // ***Add a channel for a new planner here**

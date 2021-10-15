@@ -119,7 +119,7 @@ private:
 
 public:
 
-    RacecarSimulator(): Node("racecar_simulator"), im_server("racecar_sim", this), br(this) {
+    RacecarSimulator() : Node("racecar_simulator"), im_server("racecar_sim", this), br(this) {
         // Initialize car state and driving commands
         state.x = 0;
         state.y = 0;
@@ -135,95 +135,95 @@ public:
         previous_seconds = clock->now().seconds();
 
         // Get the topic names
-        rclcpp::Parameter drive_topic = this->get_parameter("drive_topic");
-        rclcpp::Parameter map_topic = this->get_parameter("map_topic");
-        rclcpp::Parameter scan_topic = this->get_parameter("scan_topic");
-        rclcpp::Parameter pose_topic = this->get_parameter("pose_topic");
-        rclcpp::Parameter odom_topic = this->get_parameter("odom_topic");
-        rclcpp::Parameter pose_rviz_topic = this->get_parameter("pose_rviz_topic");
-        rclcpp::Parameter imu_topic = this->get_parameter("imu_topic");
-        rclcpp::Parameter ground_truth_pose_topic = this->get_parameter("ground_truth_pose_topic");
-        std::string drive_topic_str = drive_topic.as_string();
-        std::string map_topic_str = map_topic.as_string();
-        std::string scan_topic_str = scan_topic.as_string();
-        std::string pose_topic_str = pose_topic.as_string();
-        std::string odom_topic_str = odom_topic.as_string();
-        std::string pose_rviz_topic_str = pose_rviz_topic.as_string();
-        std::string imu_topic_str = imu_topic.as_string();
-        std::string ground_truth_pose_topic_str = ground_truth_pose_topic.as_string();
+        this->declare_parameter("drive_topic");
+        std::string drive_topic_str = this->get_parameter("drive_topic").as_string();
+        this->declare_parameter("map_topic");
+        std::string map_topic_str = this->get_parameter("map_topic").as_string();
+        this->declare_parameter("scan_topic");
+        std::string scan_topic_str = this->get_parameter("scan_topic").as_string();
+        this->declare_parameter("pose_topic");
+        std::string pose_topic_str = this->get_parameter("pose_topic").as_string();
+        this->declare_parameter("odom_topic");
+        std::string odom_topic_str = this->get_parameter("odom_topic").as_string();
+        this->declare_parameter("pose_rviz_topic");
+        std::string pose_rviz_topic_str = this->get_parameter("pose_rviz_topic").as_string();
+        this->declare_parameter("imu_topic");
+        std::string imu_topic_str = this->get_parameter("imu_topic").as_string();
+        this->declare_parameter("ground_truth_pose_topic");
+        std::string ground_truth_pose_topic_str = this->get_parameter("ground_truth_pose_topic").as_string();
 
         // Get steering delay params
-        rclcpp::Parameter buffer_length = this->get_parameter("buffer_length");
-        buffer_length_int = buffer_length.as_int();
+        this->declare_parameter("buffer_length");
+        buffer_length_int = this->get_parameter("buffer_length").as_int();
 
         // Get the transformation frame names
-        rclcpp::Parameter map_frame = this->get_parameter("map_frame");
-        rclcpp::Parameter base_frame = this->get_parameter("base_frame");
-        rclcpp::Parameter scan_frame = this->get_parameter("scan_frame");
-        map_frame_str = map_frame.as_string();
-        base_frame_str = base_frame.as_string();
-        scan_frame_str = scan_frame.as_string();
+        this->declare_parameter("map_frame");
+        map_frame_str = this->get_parameter("map_frame").as_string();
+        this->declare_parameter("base_frame");
+        base_frame_str = this->get_parameter("base_frame").as_string();
+        this->declare_parameter("scan_frame");
+        scan_frame_str = this->get_parameter("scan_frame").as_string();
 
         // Fetch the car parameters
-        rclcpp::Parameter scan_beams = this->get_parameter("scan_beams");
-        int scan_beams_int = scan_beams.as_int();
+        this->declare_parameter("scan_beams");
+        int scan_beams_int = this->get_parameter("scan_beams").as_int();
 
-        rclcpp::Parameter update_pose_rate = this->get_parameter("update_pose_rate");
-        rclcpp::Parameter scan_std_dev = this->get_parameter("scan_std_dev");
-        double update_pose_rate_double = update_pose_rate.as_double();
-        double scan_std_dev_double = scan_std_dev.as_double();
+        this->declare_parameter("update_pose_rate");
+        double update_pose_rate_double = this->get_parameter("update_pose_rate").as_double();
+        this->declare_parameter("scan_std_dev");
+        double scan_std_dev_double = this->get_parameter("scan_std_dev").as_double();
 
-        rclcpp::Parameter scan_field_of_view = this->get_parameter("scan_field_of_view");
-        rclcpp::Parameter map_free_threshold = this->get_parameter("map_free_threshold");
-        rclcpp::Parameter scan_distance_to_base_link = this->get_parameter("scan_distance_to_base_link");
-        rclcpp::Parameter max_steering_angle = this->get_parameter("max_steering_angle");
-        rclcpp::Parameter max_speed = this->get_parameter("max_speed");
-        rclcpp::Parameter max_accel = this->get_parameter("max_accel");
-        rclcpp::Parameter max_decel = this->get_parameter("max_decel");
-        rclcpp::Parameter max_steering_vel = this->get_parameter("max_steering_vel");
-        rclcpp::Parameter width = this->get_parameter("width");
-        scan_field_of_view_double = scan_field_of_view.as_double();
-        map_free_threshold_double = map_free_threshold.as_double();
-        scan_distance_to_base_link_double = scan_distance_to_base_link.as_double();
-        max_speed_double = max_speed.as_double();
-        max_steering_angle_double = max_steering_angle.as_double();
-        ttc_threshold_double = max_accel.as_double();
-        max_decel_double = max_decel.as_double();
-        max_steering_vel_double = max_steering_vel.as_double();
-        width_double = width.as_double();
+        this->declare_parameter("scan_field_of_view");
+        scan_field_of_view_double = this->get_parameter("scan_field_of_view").as_double();
+        this->declare_parameter("map_free_threshold");
+        map_free_threshold_double = this->get_parameter("map_free_threshold").as_double();
+        this->declare_parameter("scan_distance_to_base_link");
+        scan_distance_to_base_link_double = this->get_parameter("scan_distance_to_base_link").as_double();
+        this->declare_parameter("max_speed");
+        max_speed_double = this->get_parameter("max_speed").as_double();
+        this->declare_parameter("max_steering_angle");
+        max_steering_angle_double = this->get_parameter("max_steering_angle").as_double();
+        this->declare_parameter("max_accel");
+        ttc_threshold_double = this->get_parameter("max_accel").as_double();
+        this->declare_parameter("max_decel");
+        max_decel_double = this->get_parameter("max_decel").as_double();
+        this->declare_parameter("max_steering_vel");
+        max_steering_vel_double = this->get_parameter("max_steering_vel").as_double();
+        this->declare_parameter("width");
+        width_double = this->get_parameter("width").as_double();
 
-        rclcpp::Parameter wheelbase = this->get_parameter("wheelbase");
-        rclcpp::Parameter friction_coeff = this->get_parameter("friction_coeff");
-        rclcpp::Parameter height_cg = this->get_parameter("height_cg");
-        rclcpp::Parameter l_cg2rear = this->get_parameter("l_cg2rear");
-        rclcpp::Parameter l_cg2front = this->get_parameter("l_cg2front");
-        rclcpp::Parameter C_S_front = this->get_parameter("C_S_front");
-        rclcpp::Parameter C_S_rear = this->get_parameter("C_S_rear");
-        rclcpp::Parameter moment_inertia = this->get_parameter("moment_inertia");
-        rclcpp::Parameter mass = this->get_parameter("mass");
-        params.wheelbase = wheelbase.as_double();
-        params.friction_coeff = friction_coeff.as_double();
-        params.h_cg = height_cg.as_double();
-        params.l_r = l_cg2rear.as_double();
-        params.l_f = l_cg2front.as_double();
-        params.cs_f = C_S_front.as_double();
-        params.l_f = C_S_rear.as_double();
-        params.I_z = moment_inertia.as_double();
-        params.mass = mass.as_double();
+        this->declare_parameter("wheelbase");
+        params.wheelbase = this->get_parameter("wheelbase").as_double();
+        this->declare_parameter("friction_coeff");
+        params.friction_coeff = this->get_parameter("friction_coeff").as_double();
+        this->declare_parameter("height_cg");
+        params.h_cg = this->get_parameter("height_cg").as_double();
+        this->declare_parameter("l_cg2rear");
+        params.l_r = this->get_parameter("l_cg2rear").as_double();
+        this->declare_parameter("l_cg2front");
+        params.l_f = this->get_parameter("l_cg2front").as_double();
+        this->declare_parameter("C_S_front");
+        params.cs_f = this->get_parameter("C_S_front").as_double();
+        this->declare_parameter("C_S_rear");
+        params.l_f = this->get_parameter("C_S_rear").as_double();
+        this->declare_parameter("moment_inertia");
+        params.I_z = this->get_parameter("moment_inertia").as_double();
+        this->declare_parameter("mass");
+        params.mass = this->get_parameter("mass").as_double();
 
         // clip velocity
-        rclcpp::Parameter speed_clip_diff = this->get_parameter("speed_clip_diff");
-        speed_clip_diff_double = speed_clip_diff.as_double();
+        this->declare_parameter("speed_clip_diff");
+        speed_clip_diff_double = this->get_parameter("speed_clip_diff").as_double();
 
         // Determine if we should broadcast
-        rclcpp::Parameter broadcast_transform = this->get_parameter("broadcast_transform");
-        rclcpp::Parameter publish_ground_truth_pose = this->get_parameter("publish_ground_truth_pose");
-        broadcast_transform_bool = broadcast_transform.as_bool();
-        publish_ground_truth_pose_bool = publish_ground_truth_pose.as_bool();
+        this->declare_parameter("broadcast_transform");
+        broadcast_transform_bool = this->get_parameter("broadcast_transform").as_bool();
+        this->declare_parameter("publish_ground_truth_pose");
+        publish_ground_truth_pose_bool = this->get_parameter("publish_ground_truth_pose").as_bool();
 
         // Get obstacle size parameter
-        rclcpp::Parameter obstacle_size = this->get_parameter("obstacle_size");
-        obstacle_size_int = obstacle_size.as_int();
+        this->declare_parameter("obstacle_size");
+        obstacle_size_int = this->get_parameter("obstacle_size").as_int();
 
         // Initialize a simulator of the laser scanner
         scan_simulator = ScanSimulator2D(
@@ -232,19 +232,19 @@ public:
             scan_std_dev_double);
 
         // Make a publisher for laser scan messages
-        scan_pub = this->create_publisher<sensor_msgs::msg::LaserScan>(scan_topic_str, 1);
+        scan_pub = this->create_publisher<sensor_msgs::msg::LaserScan>(scan_topic_str, rclcpp::SensorDataQoS());
 
         // Make a publisher for odometry messages
-        odom_pub = this->create_publisher<nav_msgs::msg::Odometry>(odom_topic_str, 1);
+        odom_pub = this->create_publisher<nav_msgs::msg::Odometry>(odom_topic_str, rclcpp::SensorDataQoS());
 
         // Make a publisher for IMU messages
-        imu_pub = this->create_publisher<sensor_msgs::msg::Imu>(imu_topic_str, 1);
+        imu_pub = this->create_publisher<sensor_msgs::msg::Imu>(imu_topic_str, rclcpp::SensorDataQoS());
 
         // Make a publisher for publishing map with obstacles
-        map_pub = this->create_publisher<nav_msgs::msg::OccupancyGrid>("/map", 1);
+        map_pub = this->create_publisher<nav_msgs::msg::OccupancyGrid>(map_topic_str, rclcpp::SensorDataQoS());
 
         // Make a publisher for ground truth pose
-        pose_pub = this->create_publisher<geometry_msgs::msg::PoseStamped>(ground_truth_pose_topic_str, 1);
+        pose_pub = this->create_publisher<geometry_msgs::msg::PoseStamped>(ground_truth_pose_topic_str, rclcpp::SensorDataQoS());
 
         // Start a timer to output the pose
         this->create_wall_timer(std::chrono::milliseconds(int(update_pose_rate_double*1000)), std::bind(&RacecarSimulator::update_pose, this));
@@ -262,13 +262,10 @@ public:
         // obstacle subscriber
         this->create_subscription<geometry_msgs::msg::PointStamped>("/clicked_point", rclcpp::SensorDataQoS(), std::bind(&RacecarSimulator::obs_callback, this, std::placeholders::_1));
 
-
-
         // get collision safety margin
-        // rclcpp::Parameter coll_threshold = this->get_parameter("coll_threshold");
-        rclcpp::Parameter ttc_threshold = this->get_parameter("ttc_threshold");
-        // double coll_threshold_double = coll_threshold.as_double();
-        ttc_threshold_double = ttc_threshold.as_double();
+        // double coll_threshold_double = this->get_parameter("coll_threshold").as_double();
+        this->declare_parameter("ttc_threshold");
+        ttc_threshold_double = this->get_parameter("ttc_threshold").as_double();
 
         scan_ang_incr_double = scan_simulator.get_angle_increment();
 

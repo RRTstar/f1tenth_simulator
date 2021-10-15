@@ -81,20 +81,20 @@ private:
 public:
     BehaviorController() : Node("behavior_controller") {
         // get topic names
-        rclcpp::Parameter scan_topic = this->get_parameter("scan_topic");
-        rclcpp::Parameter odom_topic = this->get_parameter("odom_topic");
-        rclcpp::Parameter imu_topic = this->get_parameter("imu_topic");
-        rclcpp::Parameter joy_topic = this->get_parameter("joy_topic");
-        rclcpp::Parameter keyboard_topic = this->get_parameter("keyboard_topic");
-        rclcpp::Parameter brake_bool_topic = this->get_parameter("brake_bool_topic");
-        rclcpp::Parameter mux_topic = this->get_parameter("mux_topic");
-        const std::string scan_topic_str = scan_topic.as_string();
-        const std::string odom_topic_str = odom_topic.as_string();
-        const std::string imu_topic_str = imu_topic.as_string();
-        const std::string joy_topic_str = joy_topic.as_string();
-        const std::string keyboard_topic_str = keyboard_topic.as_string();
-        const std::string brake_bool_topic_str = brake_bool_topic.as_string();
-        const std::string mux_topic_str = mux_topic.as_string();
+        this->declare_parameter("scan_topic");
+        const std::string scan_topic_str = this->get_parameter("scan_topic").as_string();
+        this->declare_parameter("odom_topic");
+        const std::string odom_topic_str = this->get_parameter("odom_topic").as_string();
+        this->declare_parameter("imu_topic");
+        const std::string imu_topic_str = this->get_parameter("imu_topic").as_string();
+        this->declare_parameter("joy_topic");
+        const std::string joy_topic_str = this->get_parameter("joy_topic").as_string();
+        this->declare_parameter("keyboard_topic");
+        const std::string keyboard_topic_str = this->get_parameter("keyboard_topic").as_string();
+        this->declare_parameter("brake_bool_topic");
+        const std::string brake_bool_topic_str = this->get_parameter("brake_bool_topic").as_string();
+        this->declare_parameter("mux_topic");
+        const std::string mux_topic_str = this->get_parameter("mux_topic").as_string();
 
         // Make a publisher for mux messages
         mux_pub = this->create_publisher<std_msgs::msg::Int32MultiArray>(mux_topic_str, 10);
@@ -108,50 +108,50 @@ public:
         this->create_subscription<std_msgs::msg::Bool>(brake_bool_topic_str, rclcpp::SensorDataQoS(), std::bind(&BehaviorController::brake_callback, this, std::placeholders::_1));
 
         // Get mux indices
-        rclcpp::Parameter joy_mux_idx = this->get_parameter("joy_mux_idx");
-        rclcpp::Parameter key_mux_idx = this->get_parameter("key_mux_idx");
-        rclcpp::Parameter random_walker_mux_idx = this->get_parameter("random_walker_mux_idx");
-        rclcpp::Parameter brake_mux_idx = this->get_parameter("brake_mux_idx");
-        rclcpp::Parameter nav_mux_idx = this->get_parameter("nav_mux_idx");
-        joy_mux_idx_int = joy_mux_idx.as_int();
-        key_mux_idx_int = key_mux_idx.as_int();
-        random_walker_mux_idx_int = random_walker_mux_idx.as_int();
-        brake_mux_idx_int = brake_mux_idx.as_int();
-        nav_mux_idx_int = nav_mux_idx.as_int();
+        this->declare_parameter("joy_mux_idx");
+        joy_mux_idx_int = this->get_parameter("joy_mux_idx").as_int();
+        this->declare_parameter("key_mux_idx");
+        key_mux_idx_int = this->get_parameter("key_mux_idx").as_int();
+        this->declare_parameter("random_walker_mux_idx");
+        random_walker_mux_idx_int = this->get_parameter("random_walker_mux_idx").as_int();
+        this->declare_parameter("brake_mux_idx");
+        brake_mux_idx_int = this->get_parameter("brake_mux_idx").as_int();
+        this->declare_parameter("nav_mux_idx");
+        nav_mux_idx_int = this->get_parameter("nav_mux_idx").as_int();
         // ***Add mux index for new planner here***
         // n.getParam("new_mux_idx", new_mux_idx);
 
         // Get button indices
-        rclcpp::Parameter joy_button_idx = this->get_parameter("joy_button_idx");
-        rclcpp::Parameter key_button_idx = this->get_parameter("key_button_idx");
-        rclcpp::Parameter random_walk_button_idx = this->get_parameter("random_walk_button_idx");
-        rclcpp::Parameter brake_button_idx = this->get_parameter("brake_button_idx");
-        rclcpp::Parameter nav_button_idx = this->get_parameter("nav_button_idx");
-        joy_button_idx_int = joy_button_idx.as_int();
-        key_button_idx_int = key_button_idx.as_int();
-        random_walk_button_idx_int = random_walk_button_idx.as_int();
-        brake_button_idx_int = brake_button_idx.as_int();
-        nav_button_idx_int = nav_button_idx.as_int();
+        this->declare_parameter("joy_button_idx");
+        joy_button_idx_int = this->get_parameter("joy_button_idx").as_int();
+        this->declare_parameter("key_button_idx");
+        key_button_idx_int = this->get_parameter("key_button_idx").as_int();
+        this->declare_parameter("random_walk_button_idx");
+        random_walk_button_idx_int = this->get_parameter("random_walk_button_idx").as_int();
+        this->declare_parameter("brake_button_idx");
+        brake_button_idx_int = this->get_parameter("brake_button_idx").as_int();
+        this->declare_parameter("nav_button_idx");
+        nav_button_idx_int = this->get_parameter("nav_button_idx").as_int();
         // ***Add button index for new planner here***
         // n.getParam("new_button_idx", new_button_idx);
 
         // Get key indices
-        rclcpp::Parameter joy_key_char = this->get_parameter("joy_key_char");
-        rclcpp::Parameter keyboard_key_char = this->get_parameter("keyboard_key_char");
-        rclcpp::Parameter random_walk_key_char = this->get_parameter("random_walk_key_char");
-        rclcpp::Parameter brake_key_char = this->get_parameter("brake_key_char");
-        rclcpp::Parameter nav_key_char = this->get_parameter("nav_key_char");
-        joy_key_char_str = joy_key_char.as_string();
-        keyboard_key_char_str = keyboard_key_char.as_string();
-        random_walk_key_char_str = random_walk_key_char.as_string();
-        brake_key_char_str = brake_key_char.as_string();
-        nav_key_char_str = nav_key_char.as_string();
+        this->declare_parameter("joy_key_char");
+        joy_key_char_str = this->get_parameter("joy_key_char").as_string();
+        this->declare_parameter("keyboard_key_char");
+        keyboard_key_char_str = this->get_parameter("keyboard_key_char").as_string();
+        this->declare_parameter("random_walk_key_char");
+        random_walk_key_char_str = this->get_parameter("random_walk_key_char").as_string();
+        this->declare_parameter("brake_key_char");
+        brake_key_char_str = this->get_parameter("brake_key_char").as_string();
+        this->declare_parameter("nav_key_char");
+        nav_key_char_str = this->get_parameter("nav_key_char").as_string();
         // ***Add key char for new planner here***
         // n.getParam("new_key_char", new_key_char);
 
         // Initialize the mux controller
-        rclcpp::Parameter mux_size = this->get_parameter("mux_size");
-        mux_size_int = mux_size.as_int();
+        this->declare_parameter("mux_size");
+        mux_size_int = this->get_parameter("mux_size").as_int();
         mux_controller.reserve(mux_size_int);
         for (int i = 0; i < mux_size_int; i++) {
             mux_controller[i] = false;
@@ -171,19 +171,18 @@ public:
         state.st_dyn=false;
 
         // Get params for precomputation and collision detection
-        rclcpp::Parameter scan_beams = this->get_parameter("scan_beams");
-        int scan_beams_int = scan_beams.as_int();
+        this->declare_parameter("scan_beams");
+        int scan_beams_int = this->get_parameter("scan_beams").as_int();
 
-        // rclcpp::Parameter ttc_threshold = this->get_parameter("ttc_threshold");
-        rclcpp::Parameter scan_distance_to_base_link = this->get_parameter("scan_distance_to_base_link");
-        rclcpp::Parameter width = this->get_parameter("width");
-        rclcpp::Parameter wheelbase = this->get_parameter("wheelbase");
-        rclcpp::Parameter scan_field_of_view = this->get_parameter("scan_field_of_view");
-        // double ttc_threshold_double = ttc_threshold.as_double();
-        double scan_distance_to_base_link_double = scan_distance_to_base_link.as_double();
-        double width_double = width.as_double();
-        double wheelbase_double = wheelbase.as_double();
-        double scan_field_of_view_double = scan_field_of_view.as_double();
+        // double ttc_threshold_double = this->get_parameter("ttc_threshold").as_double();
+        this->declare_parameter("scan_distance_to_base_link");
+        double scan_distance_to_base_link_double = this->get_parameter("scan_distance_to_base_link").as_double();
+        this->declare_parameter("width");
+        double width_double = this->get_parameter("width").as_double();
+        this->declare_parameter("wheelbase");
+        double wheelbase_double = this->get_parameter("wheelbase").as_double();
+        this->declare_parameter("scan_field_of_view");
+        double scan_field_of_view_double = this->get_parameter("scan_field_of_view").as_double();
 
         double scan_ang_incr = scan_field_of_view_double / scan_beams_int;
 
@@ -193,8 +192,8 @@ public:
                 scan_distance_to_base_link_double, -scan_field_of_view_double/2.0, scan_ang_incr);
 
         // Create collision file to be written to
-        rclcpp::Parameter collision_file = this->get_parameter("collision_file");
-        std::string collision_file_str = collision_file.as_string();
+        this->declare_parameter("collision_file");
+        std::string collision_file_str = this->get_parameter("collision_file").as_string();
         collision_file_os.open(ament_index_cpp::get_package_share_directory("f1tenth_simulator") + "/logs/" + collision_file_str + ".txt");
         // rclcpp::Time time;
         // beginning_seconds = time.seconds();
