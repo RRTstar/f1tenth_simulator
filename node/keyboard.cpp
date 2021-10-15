@@ -23,8 +23,8 @@ int main(int argc, char ** argv) {
     auto node = rclcpp::Node::make_shared("keyboard");
 
     // Initialize publisher
-    rclcpp::Parameter keyboard_topic = node->get_parameter("keyboard_topic");
-    std::string keyboard_topic_str = keyboard_topic.as_string();
+    node->declare_parameter("keyboard_topic");
+    std::string keyboard_topic_str = node->get_parameter("keyboard_topic").as_string();
 
     auto key_pub = node->create_publisher<std_msgs::msg::String>(keyboard_topic_str, 10);
 

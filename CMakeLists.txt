@@ -82,7 +82,7 @@ foreach(_node_file ${NODE_SRC_FILES})
 endforeach()
 
 install(
-  DIRECTORY launch maps param rviz
+  DIRECTORY launch maps param rviz urdf
   DESTINATION share/${PROJECT_NAME}
 )
 

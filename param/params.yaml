@@ -1,4 +1,4 @@
-bahavior_controller:
+behavior_controller:
   ros__parameters:
     scan_topic: "/scan"
     odom_topic: "/odom"
