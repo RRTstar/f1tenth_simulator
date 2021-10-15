@@ -100,12 +100,12 @@ public:
         mux_pub = this->create_publisher<std_msgs::msg::Int32MultiArray>(mux_topic_str, 10);
 
         // Start subscribers to listen to laser scan, joy, IMU, and odom messages
-        this->create_subscription<sensor_msgs::msg::LaserScan>(scan_topic_str, rclcpp::SensorDataQoS(), std::bind(&BehaviorController::laser_callback, this, std::placeholders::_1));
-        this->create_subscription<sensor_msgs::msg::Joy>(joy_topic_str, rclcpp::SensorDataQoS(), std::bind(&BehaviorController::joy_callback, this, std::placeholders::_1));
-        this->create_subscription<sensor_msgs::msg::Imu>(imu_topic_str, rclcpp::SensorDataQoS(), std::bind(&BehaviorController::imu_callback, this, std::placeholders::_1));
-        this->create_subscription<nav_msgs::msg::Odometry>(odom_topic_str, rclcpp::SensorDataQoS(), std::bind(&BehaviorController::odom_callback, this, std::placeholders::_1));
-        this->create_subscription<std_msgs::msg::String>(keyboard_topic_str, rclcpp::SensorDataQoS(), std::bind(&BehaviorController::key_callback, this, std::placeholders::_1));
-        this->create_subscription<std_msgs::msg::Bool>(brake_bool_topic_str, rclcpp::SensorDataQoS(), std::bind(&BehaviorController::brake_callback, this, std::placeholders::_1));
+        this->create_subscription<sensor_msgs::msg::LaserScan>(scan_topic_str, 10, std::bind(&BehaviorController::laser_callback, this, std::placeholders::_1));
+        this->create_subscription<sensor_msgs::msg::Joy>(joy_topic_str, 10, std::bind(&BehaviorController::joy_callback, this, std::placeholders::_1));
+        this->create_subscription<sensor_msgs::msg::Imu>(imu_topic_str, 10, std::bind(&BehaviorController::imu_callback, this, std::placeholders::_1));
+        this->create_subscription<nav_msgs::msg::Odometry>(odom_topic_str, 10, std::bind(&BehaviorController::odom_callback, this, std::placeholders::_1));
+        this->create_subscription<std_msgs::msg::String>(keyboard_topic_str, 10, std::bind(&BehaviorController::key_callback, this, std::placeholders::_1));
+        this->create_subscription<std_msgs::msg::Bool>(brake_bool_topic_str, 10, std::bind(&BehaviorController::brake_callback, this, std::placeholders::_1));
 
         // Get mux indices
         this->declare_parameter("joy_mux_idx");

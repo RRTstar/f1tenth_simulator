@@ -116,6 +116,8 @@ private:
     int buffer_length_int;
     std::vector<double> steering_buffer;
 
+    rclcpp::TimerBase::SharedPtr timer_;
+
 
 public:
 
@@ -168,8 +170,8 @@ public:
         this->declare_parameter("scan_beams");
         int scan_beams_int = this->get_parameter("scan_beams").as_int();
 
-        this->declare_parameter("update_pose_rate");
-        double update_pose_rate_double = this->get_parameter("update_pose_rate").as_double();
+        // this->declare_parameter("update_pose_rate");
+        // double update_pose_rate_double = this->get_parameter("update_pose_rate").as_double();
         this->declare_parameter("scan_std_dev");
         double scan_std_dev_double = this->get_parameter("scan_std_dev").as_double();
 
@@ -232,35 +234,35 @@ public:
             scan_std_dev_double);
 
         // Make a publisher for laser scan messages
-        scan_pub = this->create_publisher<sensor_msgs::msg::LaserScan>(scan_topic_str, rclcpp::SensorDataQoS());
+        scan_pub = this->create_publisher<sensor_msgs::msg::LaserScan>(scan_topic_str, 10);
 
         // Make a publisher for odometry messages
-        odom_pub = this->create_publisher<nav_msgs::msg::Odometry>(odom_topic_str, rclcpp::SensorDataQoS());
+        odom_pub = this->create_publisher<nav_msgs::msg::Odometry>(odom_topic_str, 10);
 
         // Make a publisher for IMU messages
-        imu_pub = this->create_publisher<sensor_msgs::msg::Imu>(imu_topic_str, rclcpp::SensorDataQoS());
+        imu_pub = this->create_publisher<sensor_msgs::msg::Imu>(imu_topic_str, 10);
 
         // Make a publisher for publishing map with obstacles
-        map_pub = this->create_publisher<nav_msgs::msg::OccupancyGrid>(map_topic_str, rclcpp::SensorDataQoS());
+        map_pub = this->create_publisher<nav_msgs::msg::OccupancyGrid>(map_topic_str, 10);
 
         // Make a publisher for ground truth pose
-        pose_pub = this->create_publisher<geometry_msgs::msg::PoseStamped>(ground_truth_pose_topic_str, rclcpp::SensorDataQoS());
+        pose_pub = this->create_publisher<geometry_msgs::msg::PoseStamped>(ground_truth_pose_topic_str, 10);
 
         // Start a timer to output the pose
-        this->create_wall_timer(std::chrono::milliseconds(int(update_pose_rate_double*1000)), std::bind(&RacecarSimulator::update_pose, this));
+        timer_ = this->create_wall_timer(std::chrono::milliseconds(1), std::bind(&RacecarSimulator::update_pose, this));
 
         // Start a subscriber to listen to drive commands
-        this->create_subscription<ackermann_msgs::msg::AckermannDriveStamped>(drive_topic_str, rclcpp::SensorDataQoS(), std::bind(&RacecarSimulator::drive_callback, this, std::placeholders::_1));
+        this->create_subscription<ackermann_msgs::msg::AckermannDriveStamped>(drive_topic_str, 10, std::bind(&RacecarSimulator::drive_callback, this, std::placeholders::_1));
 
         // Start a subscriber to listen to new maps
-        auto map_sub = this->create_subscription<nav_msgs::msg::OccupancyGrid>(map_topic_str, rclcpp::SensorDataQoS(), std::bind(&RacecarSimulator::map_callback, this, std::placeholders::_1));
+        auto map_sub = this->create_subscription<nav_msgs::msg::OccupancyGrid>(map_topic_str, 10, std::bind(&RacecarSimulator::map_callback, this, std::placeholders::_1));
 
         // Start a subscriber to listen to pose messages
-        this->create_subscription<geometry_msgs::msg::PoseStamped>(pose_topic_str, rclcpp::SensorDataQoS(), std::bind(&RacecarSimulator::pose_callback, this, std::placeholders::_1));
-        this->create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>(pose_rviz_topic_str, rclcpp::SensorDataQoS(), std::bind(&RacecarSimulator::pose_rviz_callback, this, std::placeholders::_1));
+        this->create_subscription<geometry_msgs::msg::PoseStamped>(pose_topic_str, 10, std::bind(&RacecarSimulator::pose_callback, this, std::placeholders::_1));
+        this->create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>(pose_rviz_topic_str, 10, std::bind(&RacecarSimulator::pose_rviz_callback, this, std::placeholders::_1));
 
         // obstacle subscriber
-        this->create_subscription<geometry_msgs::msg::PointStamped>("/clicked_point", rclcpp::SensorDataQoS(), std::bind(&RacecarSimulator::obs_callback, this, std::placeholders::_1));
+        this->create_subscription<geometry_msgs::msg::PointStamped>("/clicked_point", 10, std::bind(&RacecarSimulator::obs_callback, this, std::placeholders::_1));
 
         // get collision safety margin
         // double coll_threshold_double = this->get_parameter("coll_threshold").as_double();
@@ -286,7 +288,7 @@ public:
         auto ret = wait_set.wait(std::chrono::seconds(10));
         if (ret.kind() == rclcpp::WaitResultKind::Ready){
             rclcpp::MessageInfo info;
-            // auto ret_take = map_sub->take(map_msg, info);
+            map_sub->take(map_msg, info);
         }
 
         // OBSTACLE BUTTON:
@@ -344,7 +346,6 @@ public:
     }
 
     void update_pose() {
-
         // simulate P controller
         compute_accel(desired_speed);
         double actual_ang = 0.0;
@@ -743,7 +744,6 @@ public:
             sensor_msgs::msg::Imu imu;
             imu.header.stamp = timestamp;
             imu.header.frame_id = map_frame_str;
-
 
             imu_pub->publish(imu);
         }
