@@ -40,6 +40,7 @@
   <run_depend>std_msgs</run_depend>
   <run_depend>image_transport</run_depend>
   <run_depend>message_runtime</run_depend>
+  <run_depend>nav2_bringup</run_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
