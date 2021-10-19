@@ -28,7 +28,6 @@ int main(int argc, char ** argv) {
 
     auto key_pub = node->create_publisher<std_msgs::msg::String>(keyboard_topic_str, 10);
 
-
     static struct termios oldT, newT;
     tcgetattr( STDIN_FILENO, &oldT);
     newT = oldT;
@@ -49,6 +48,7 @@ int main(int argc, char ** argv) {
         // Publish the character
         msg.data = c;
         key_pub->publish(msg);
+        rclcpp::spin_some(node);
     }
 
     tcsetattr( STDIN_FILENO, 0, &oldT);

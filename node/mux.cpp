@@ -241,16 +241,11 @@ public:
 
 
 /// Channel class method implementations
-
-Channel::Channel() : Node("channel") {
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Channel intialized without proper information");
-    Channel("", "", -1, nullptr);
-}
-
 Channel::Channel(std::string channel_name_str, std::string drive_topic_str, int mux_idx_, Mux* mux)
-: Node("channel"), mux_idx(mux_idx_), mp_mux(mux) {
-    drive_pub = this->create_publisher<ackermann_msgs::msg::AckermannDriveStamped>(drive_topic_str, 10);
-    this->create_subscription<ackermann_msgs::msg::AckermannDriveStamped>(channel_name_str, 10, std::bind(&Channel::drive_callback, this, std::placeholders::_1));
+: mux_idx(mux_idx_), mp_mux(mux) {
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Channel intialized");
+    drive_pub = mp_mux->create_publisher<ackermann_msgs::msg::AckermannDriveStamped>(drive_topic_str, 10);
+    mp_mux->create_subscription<ackermann_msgs::msg::AckermannDriveStamped>(channel_name_str, 10, std::bind(&Channel::drive_callback, this, std::placeholders::_1));
 }
 
 void Channel::drive_callback(const ackermann_msgs::msg::AckermannDriveStamped::SharedPtr msg) {

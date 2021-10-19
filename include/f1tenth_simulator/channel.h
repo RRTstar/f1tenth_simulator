@@ -7,7 +7,7 @@
 
 class Mux;
 
-class Channel : public rclcpp::Node {
+class Channel {
 private:
     // Publish drive data to simulator/car
     rclcpp::Publisher<ackermann_msgs::msg::AckermannDriveStamped>::SharedPtr drive_pub;
@@ -17,10 +17,7 @@ private:
     // Pointer to mux object (to access mux controller and nodeHandle)
     Mux* mp_mux;
 
-
 public:
-    Channel();
-
     Channel(std::string channel_name, std::string drive_topic, int mux_idx_, Mux* mux);
 
     void drive_callback(const ackermann_msgs::msg::AckermannDriveStamped::SharedPtr msg);
